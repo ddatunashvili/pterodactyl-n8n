@@ -6,9 +6,9 @@ FROM n8nio/n8n:2.43.2
 ARG CONTAINER_UID=988
 
 USER root
-RUN apk add --no-cache bash util-linux-misc \
- && grep -q ":${CONTAINER_UID}:" /etc/group  || echo "container:x:${CONTAINER_UID}:" >> /etc/group \
- && grep -q ":x:${CONTAINER_UID}:" /etc/passwd || echo "container:x:${CONTAINER_UID}:${CONTAINER_UID}::/home/container:/bin/bash" >> /etc/passwd \
+# n8n 2.x ships without a package manager or bash, so the entrypoint is POSIX sh.
+RUN { grep -q ":${CONTAINER_UID}:" /etc/group || echo "container:x:${CONTAINER_UID}:" >> /etc/group; } \
+ && { grep -q ":x:${CONTAINER_UID}:" /etc/passwd || echo "container:x:${CONTAINER_UID}:${CONTAINER_UID}::/home/container:/bin/sh" >> /etc/passwd; } \
  && mkdir -p /home/container && chown ${CONTAINER_UID}:${CONTAINER_UID} /home/container
 
 # Wings drops capabilities from every container, and the kernel refuses to
