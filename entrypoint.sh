@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+# POSIX sh: the n8n image carries no bash and no package manager to add one.
 cd /home/container || exit 1
 
 # n8n keeps everything (SQLite database, encryption key, settings) under
@@ -15,13 +16,14 @@ export TZ="${GENERIC_TIMEZONE:-UTC}"
 MODIFIED_STARTUP=$(printf '%s' "${STARTUP:-n8n start}" | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
-# Own session, so shutdown can signal bash and n8n together.
-setsid bash -c "${MODIFIED_STARTUP}" </dev/null &
+sh -c "${MODIFIED_STARTUP}" </dev/null &
 PID=$!
 
+# This script is PID 1, so `kill -1` reaches every other process in the
+# container: the startup shell and n8n under it, whatever the tree looks like.
 shutdown() {
     echo "Stopping n8n..."
-    kill -TERM -- "-$PID" 2>/dev/null || kill -TERM "$PID" 2>/dev/null
+    kill -TERM -1 2>/dev/null
     wait "$PID"
     exit $?
 }

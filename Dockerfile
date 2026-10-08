@@ -27,4 +27,4 @@ USER ${CONTAINER_UID}
 WORKDIR /home/container
 
 STOPSIGNAL SIGINT
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
