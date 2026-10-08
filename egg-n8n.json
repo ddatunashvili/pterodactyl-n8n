@@ -1,0 +1,82 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-10-08T00:00:00+00:00",
+    "name": "n8n",
+    "author": "404frieds@gmail.com",
+    "description": "n8n workflow automation. Open http://<address>:<port> and create the owner account on first visit. Workflows, credentials and the encryption key live in the server volume.",
+    "features": null,
+    "docker_images": {
+        "n8n 2.43": "ghcr.io/ddatunashvili/pterodactyl-n8n:latest"
+    },
+    "file_denylist": [],
+    "startup": "n8n start",
+    "config": {
+        "files": "{}",
+        "startup": "{\"done\": \"Editor is now accessible via\"}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\nmkdir -p /mnt/server/.n8n\necho \"Install complete. n8n creates its database and encryption key on first start.\"\n",
+            "container": "ghcr.io/pterodactyl/installers:debian",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Public Host",
+            "description": "The domain n8n is reached at, if you put one in front of it with the panel's proxy (e.g. n8n.example.com). Leave empty to use the server's address and port.",
+            "env_variable": "N8N_HOST",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "nullable|string|max:253",
+            "field_type": "text"
+        },
+        {
+            "name": "Webhook URL",
+            "description": "The public base URL webhooks are advertised at, e.g. https://n8n.example.com/. Leave empty to derive it from the host, protocol and port.",
+            "env_variable": "WEBHOOK_URL",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "nullable|string|max:255",
+            "field_type": "text"
+        },
+        {
+            "name": "Protocol",
+            "description": "http, or https once n8n sits behind the panel's HTTPS proxy.",
+            "env_variable": "N8N_PROTOCOL",
+            "default_value": "http",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:http,https",
+            "field_type": "text"
+        },
+        {
+            "name": "Secure Cookie",
+            "description": "false lets you log in over plain http on address:port. Set true once n8n is served over HTTPS.",
+            "env_variable": "N8N_SECURE_COOKIE",
+            "default_value": "false",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:true,false",
+            "field_type": "text"
+        },
+        {
+            "name": "Timezone",
+            "description": "Timezone schedule triggers run in, e.g. UTC or Asia/Tbilisi.",
+            "env_variable": "GENERIC_TIMEZONE",
+            "default_value": "UTC",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:64",
+            "field_type": "text"
+        }
+    ]
+}
